@@ -18,7 +18,7 @@ c_BK7=[0.006000699, 0.020017914, 103.560653] #in micrometres^2
 # =============================================================================
 # fuction to find interpolated refractive indices
 # =============================================================================
-wl_integer = np.arange(np.min(wl),np.max(wl),1) #every integer wavelength from 330-2500
+wl_integer = np.arange(np.min(wl),np.max(wl),1) #every integer wavelength from 330-2500. can change the number from 1 to interpolate with different intervals
 n_integer = np.interp(wl_integer,wl,n) #refractive index for each integer wavelength
 def interpolatedN(wavelength):
 	loc=np.where(wavelength==wl_integer)
