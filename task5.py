@@ -9,7 +9,10 @@ import scipy as sp
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 #load data
-wl, n, k=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=True ) 
+wl, n, k=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
+
+wl_integer = np.arange(np.min(wl),np.max(wl),1) #every integer wavelength from 330-2500
+n_integer = np.interp(wl_integer,wl,n) #refractive index for each integer wavelength
 
 #define the sellmeier refractive index function
 def sellmeier_fit(wavelength, a1,a2, a3,b1, b2,b3):
@@ -31,7 +34,10 @@ for i in wl:
 #plot results
 plt.figure()
 plt.plot(wl,n, 'x', label='data')
+plt.plot(wl_integer, n_integer, 'o', label = "interpolated")
 plt.plot(wl, sellmeiery, label='sellmeier')
+plt.ylabel("refractive index n")
+plt.xlabel("wavelength (nm)")
 plt.legend()
 plt.grid()
 a_BK7 = popt[0:3]
@@ -41,4 +47,6 @@ print("the sellmeier coefficeints are A: ["+str(a_BK7)+"], B:["+str(b_BK7)+"].")
 #plot difference in results
 plt.figure()
 plt.plot(wl, (sellmeiery-n))
+plt.ylabel("difference in refractive index")
+plt.xlabel("wavelength (nm)")
 plt.grid()
