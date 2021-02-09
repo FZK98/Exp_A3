@@ -34,8 +34,8 @@ plt.plot(wl,n, 'x', label='data')
 plt.plot(wl, sellmeiery, label='sellmeier')
 plt.legend()
 plt.grid()
-a_BK7 = popt[0:2]
-b_BK7 = popt[3:5]
+a_BK7 = popt[0:3]
+b_BK7 = popt[3:6]
 print("the sellmeier coefficeints are A: ["+str(a_BK7)+"], B:["+str(b_BK7)+"].")
 
 #plot difference in results
