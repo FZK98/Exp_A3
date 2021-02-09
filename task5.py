@@ -13,7 +13,7 @@ wl, n, k=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=True )
 
 #define the sellmeier refractive index function
 def sellmeier_fit(wavelength, a1,a2, a3,b1, b2,b3):
-	wavelength=wavelength/1000
+	wavelength=wavelength/1000 #convert wavelength to micrometres to make starting estimates work
 	tempFraction1 = a1*(wavelength**2)/(wavelength**2-b1)
 	tempFraction2=a2*(wavelength**2)/(wavelength**2-b2)
 	tempFraction3=a3*(wavelength**2)/(wavelength**2-b3)
