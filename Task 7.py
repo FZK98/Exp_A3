@@ -6,7 +6,10 @@ Created on Thu Feb 11 00:18:00 2021
 """
 import numpy as np 
 
-#======= input parameters==========
+# ============================================================================
+# input parameters
+# =============================================================================
+
 #need angle, and wavelength and polarisation to model the interaction
 
 # #allows the user to input variable values
@@ -19,11 +22,20 @@ import numpy as np
 theta_i = np.pi/2  # in radians - this is what numpy handles 
 user_wl = 400 #nm
 polarization = "s" #or "p"
+if polarization == "s":
+    polarization = True 
+else:
+    polarization = False 
+
 N = 10 #this is the number of layers, not including the substrate
 d = [] #list of the thickness of each layer (decide units)
 
 
-#======= Angles for each layer
+
+# ============================================================================
+# Angles for each layer
+# =============================================================================
+
 # nr = [] #this will be a list with the (real) refractive index of each layer, will be n items long
 def layer_angles(nr):
     angle_list = [user_wl] #will become n+1 items long
@@ -35,7 +47,10 @@ def layer_angles(nr):
 
 
 
-#======= z wavenumber component for each layer
+
+# ============================================================================
+# z wavenumber component for each layer
+# =============================================================================
 
 # kappa = [] # this will be a list of the imaginary components of the refractive index in each layer, will be n items long    
 # angle_list = [] #this will be the list of angles in each layer found by the prev function 
@@ -52,8 +67,10 @@ def wavenumer_zi (wl, nr, kappa, angle_list):
     return(re_kz, im_kz) #returns the list of the wavevector(z) in each layer 
 
 
-
-#====== determine the P matrix : 
+# ============================================================================
+# determine the P matrix : 
+# =============================================================================
+ 
 def P_elements(re_kz, im_kz, d):
     P_00_elements = []
     P_11_elements = []
@@ -78,9 +95,10 @@ def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements
 
     return (P_arrays)
 
+# ============================================================================
+# determine the T matrix:
+# =============================================================================
 
-#====== determine the T matrix:
-    
 #first need to find the values of each matrix element. 
 def XS_real(re_kz): #input is a list of real refractive indexes for each layer 
     for i in range(len(re_kz)-1): #goes from the 0th vacuum layer to the N-1th (non-substrate) layer (the nth layer is the substrate and it doesnt have a bottom face)
@@ -142,8 +160,11 @@ def All_T_Matrices(XP, XM):
     return(T_arrays) #this is the 3d array - a list of 2x2 matrices
 
 
-
-def Make_M(d): #d is the list of layer thicknesses => len(d) is the number of 'layers' (not including the substrate) (N-1)
+# ============================================================================
+# Determine the M Matrix 
+# =============================================================================
+# def Make_M(N, polarization): #N is the integer number of layers we have including the substrate
+    
             
  
 
