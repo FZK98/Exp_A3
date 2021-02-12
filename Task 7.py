@@ -68,6 +68,17 @@ def Make_P_Matrix(P_00_element, P_11_element):
                   [0, P_11_element]])
     return (P)
 
+def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements 
+    Plist = np.empty_like((2,2))
+    for i in range(len(P_00_elements)):
+        Pi = np.array([[P_00_elements[i], 0], 
+                  [0, P_11_elements[i]]])
+        Plist = np.append(Plist, Pi)
+    P_arrays = np.reshape(Plist,(len(P_00_elements),2,2))
+
+    return (P_arrays)
+
+
 #====== determine the T matrix:
     
 #first need to find the values of each matrix element. 
@@ -119,8 +130,21 @@ def XP(re_kz, im_kz, nr, kappa):
 def Make_T(XP, XM): #will need to be called on N times 
     T = np.array([[XP,XM], 
                   [XM, XP]])
-    return (T)
+    return(T)
+    
+def All_T_Matrices(XP, XM):
+    Tlist = np.empty_like((2, 2))
+    for i in range(len(XP)):
+        Ti = np.array([[XP, XM],
+                       [XM,XP]])
+        Tlist = np.append(Tlist, Ti)
+    T_arrays = np.reshape(Tlist, (len(XP),2,2))
+    return(T_arrays) #this is the 3d array - a list of 2x2 matrices
 
+
+
+def Make_M(d): #d is the list of layer thicknesses => len(d) is the number of 'layers' (not including the substrate) (N-1)
+            
  
 
 
