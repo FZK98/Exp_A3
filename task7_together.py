@@ -20,7 +20,7 @@ if polarization == "s":
     polarization = True 
 else:
     polarization = False 
-N = 1 #this is the number of layers, not including the substrate
+#N = 1 #this is the number of layers, not including the substrate
 materials = ["vacuum","MgF2","BK7"] #which materials constitute the layers
 d = [0,10,0] #list of the thickness of each layer (decide units). zero for vacuum and substrate for length consistency
     
@@ -221,7 +221,7 @@ else:
     list_T_complex = All_T_Matrices(list_XP_complex[0], list_XP_complex[1])
 
 
-def Make_M(re_kz, im_kz, d, N, polarization): 
+def Make_M(re_kz, im_kz, d, polarization): 
     Plist=p_list
     Tlist=list_T_complex #can change to real
     #initializes M, therefore there are an equal amount of T and P matrices to be added to M 
@@ -231,7 +231,7 @@ def Make_M(re_kz, im_kz, d, N, polarization):
         M = np.matmul(Tlist[i+1], M) #adds the T of the ith + 1 layer 
     return (M) #this is the fully calculated M matrix
 
-matrix_M = Make_M(wavenumber_list[0], wavenumber_list[1], d, N, True)
+matrix_M = Make_M(wavenumber_list[0], wavenumber_list[1], d, polarization)
 
 def rt_solver(M):
     r = - M[1,0] / M[1, 1]
