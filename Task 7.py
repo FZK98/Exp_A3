@@ -38,14 +38,12 @@ d = [] #list of the thickness of each layer (decide units)
 
 # nr = [] #this will be a list with the (real) refractive index of each layer, will be n items long
 def layer_angles(nr):
-    angle_list = [user_wl] #will become n+1 items long
-    for i in range(len(nr)):
+    angle_list = [theta_i] #will become n+1 items long
+    for i in range(len(nr)-1):
         sin_tj = nr[i]*np.sin(angle_list[i])/ nr[i+1]
         theta_j = np.arcsin(sin_tj)
         angle_list.append(theta_j)
     return (angle_list) #returns a list of angle in each layer plus initial incident angle
-
-
 
 
 # ============================================================================
@@ -85,6 +83,7 @@ def Make_P_Matrix(P_00_element, P_11_element):
                   [0, P_11_element]])
     return (P)
 
+#outputs all the P matrices in a 3D array 
 def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements 
     Plist = np.empty_like((2,2))
     for i in range(len(P_00_elements)):
@@ -150,11 +149,11 @@ def Make_T(XP, XM): #will need to be called on N times
                   [XM, XP]])
     return(T)
     
-def All_T_Matrices(XP, XM):
+def All_T_Matrices(XPs, XMs):
     Tlist = np.empty_like((2, 2))
-    for i in range(len(XP)):
-        Ti = np.array([[XP, XM],
-                       [XM,XP]])
+    for i in range(len(XPs)):
+        Ti = np.array([[XPs[i], XMs[i]],
+                       [XMs[i],XPs[i]]])
         Tlist = np.append(Tlist, Ti)
     T_arrays = np.reshape(Tlist, (len(XP),2,2))
     return(T_arrays) #this is the 3d array - a list of 2x2 matrices
@@ -163,19 +162,28 @@ def All_T_Matrices(XP, XM):
 # ============================================================================
 # Determine the M Matrix 
 # =============================================================================
-# def Make_M(N, polarization): #N is the integer number of layers we have including the substrate
+import numpy.linalg 
+
+#N = number of layers including the substrate 
+def Make_M(re_kz, im_kz, d, N, polarization): 
+    if polarization == True: #if our light is s polarized
+        XP, XM = XS(re_kz, im_kz) #each XP XM is a list
+    else:  #it is p polarised
+        XP, XM = XP(re_kz, im_kz)
+    Plist = All_P_Matrices(P_elements(re_kz, im_kz, d)) 
+    Tlist = All_T_Matrices(XP, XM)
+    #initializes M, therefore there are an equal amount of T and P matrices to be added to M 
+    M = Tlist[0] 
+    for i in range (len(Plist)): #iterates through the process N-1 times
+        M = np.matmul(Plist[i], M) #add the P of the ith layer 
+        M = np.matmul(Tlist[i+1], M) #adds the T of the ith + 1 layer 
+    return (M) #this is the fully calculated M matrix
+
+
+def rt_solver(M):
+    r = - M[0,0] / M[1, 1]
+    t =   M[1, 0] + M[0, 1] * r 
+    return(r, t)
     
             
  
-
-
-
-
-
-
-
-
-
-
-
-    
