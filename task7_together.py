@@ -14,20 +14,18 @@ Created on Thu Feb 11 11:28:53 2021
 import numpy as np
 import matplotlib.pyplot as plt
 #load necessary data
-#BK7_guess = np.loadtxt("BK7_guess.txt")
 wl_BK7, n_BK7, k_BK7=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_MgF2, n_MgF2, k_MgF2=np.loadtxt('MgF2.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unpack=True) #gold wavelength in nm
-#can maunally set the parameters (no real users)
+
 def task8(theta_i, user_wl, polarisation,materials,d):
-    #theta_i = 0#np.pi/2  # in radians - this is what numpy handles 
+    #theta_i = 0
     #user_wl = 700 #nm
     polarization = "s" #or "p"
     if polarization == "s":
         polarization = True 
     else:
         polarization = False 
-#N = 1 #this is the number of layers, not including the substrate
     #materials = ["vacuum","MgF2","BK7"] #which materials constitute the layers
     #d = [0,10,0] #list of the thickness of each layer (decide units). zero for vacuum and substrate for length consistency
     
@@ -91,7 +89,8 @@ def task8(theta_i, user_wl, polarisation,materials,d):
             im_kz.append(new_im_kz)
             re_kz.append(new_re_kz)
         return(re_kz, im_kz) #returns the list of the wavevector(z) in each layer 
-    
+        
+#======= construct lists of angles and wavenumbers
     angle_list = layer_angles(refractive_index_n) #this will be the list of angles in each layer found by the prev function 
     wavenumber_list = wavenumber_zi(user_wl, refractive_index_n, refractive_index_k, angle_list)
 # =============================================================================
@@ -102,6 +101,8 @@ def task8(theta_i, user_wl, polarisation,materials,d):
     # kz for each layer: wavenumber_list
 # now to build the matrices
 # =============================================================================
+    
+#======= functions to build P matrices
     def P_elements(re_kz, im_kz, d):
         P_00_elements = []
         P_11_elements = []
@@ -109,23 +110,7 @@ def task8(theta_i, user_wl, polarisation,materials,d):
             P_00_elements.append(np.exp(complex(0,1)*re_kz[i]*d[i])*np.exp(-im_kz[i]*d[i])) #this will return a list of elements
             P_11_elements.append(np.exp(complex(0,-1)*re_kz[i]*d[i])*np.exp(im_kz[i]*d[i]))
         return(P_00_elements, P_11_elements)
-    
-#make the matrix, calling on each calculated element, will need to call on this N-1 times
-#    def Make_P_Matrix(P_00_element, P_11_element):
-#        P = np.array([[P_00_element, 0], 
-#                  [0, P_11_element]])
-#        return (P)
-    p_elements_list = P_elements(wavenumber_list[0], wavenumber_list[1], d)
-
-#outputs all the P matrices in a 3D array 
-#def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements 
-#    Plist = np.empty_like((2,2))
-#    for i in range(len(P_00_elements)):
-#        Pi = np.array([[P_00_elements[i], 0], 
-#                  [0, P_11_elements[i]]])
-#        Plist = np.append(Plist, Pi)
-#    P_arrays = np.reshape(Plist,(len(P_00_elements),2,2))
-#    return (P_arrays)
+       
     def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements 
         Plist = []
         for i in range(len(P_00_elements)):
@@ -133,33 +118,11 @@ def task8(theta_i, user_wl, polarisation,materials,d):
                   [0, complex(P_11_elements[i])]])
             Plist.append(Pi)
         return Plist
+#======= build P matrices
+    p_elements_list = P_elements(wavenumber_list[0], wavenumber_list[1], d)
     p_list = All_P_Matrices(p_elements_list[0], p_elements_list[1])
-#making all the P matrices for each layer
-#p_matrix_dictionary={} #stores P matrix for each layer
-#p_matrix_list = []
-#for i in range(len(p_elements_list[0])):
-#    p_00_temp, p_11_temp = complex(p_elements_list[0][i]), complex(p_elements_list[1][i])
-#    p_temp = Make_P_Matrix(p_00_temp, p_11_temp)
-#    print(p_temp)
-#    mat_name = "P"+str(i)
-#    p_matrix_dictionary[mat_name] = p_temp
-#    p_matrix_list.append(p_temp)
-    
-#first need to find the values of each matrix element. 
 
-
-    def XS_real(re_kz): #input is a list of real refractive indexes for each layer
-        XSP=[]
-        XSM=[]
-        for i in range(len(re_kz)-1): #goes from the 0th vacuum layer to the N-1th (non-substrate) layer (the nth layer is the substrate and it doesnt have a bottom face)
-            ki = float(re_kz[i])
-            kj = float(re_kz[i+1])
-            Term1 = np.sqrt(kj/ki)
-            Term2 = np.sqrt(ki/kj)
-            XSP.append(0.5*(Term1 + Term2))
-            XSM.append(0.5*(Term1 - Term2))
-        return(XSP, XSM)
-
+#======= functions to build T matrices
     def XS(re_kz, im_kz): #input is a list refractive indexes for each layer (0 and substrate inclusive)
         XSP=[]
         XSM=[]
@@ -171,21 +134,6 @@ def task8(theta_i, user_wl, polarisation,materials,d):
             XSP.append(0.5*(Term1 + Term2))
             XSM.append(0.5*(Term1 - Term2))
         return(XSP, XSM)
-
-    def XP_real(re_kz, nr):#re_kz has N+1 elements, nr has N+1 elements
-        XPP=[]
-        XPM=[]
-        for i in range (len(re_kz)-1):
-            ki = float(re_kz[i]) 
-            kj = float(re_kz[i+1])
-            ni = nr[i]
-            nj = nr[i+1]
-            Term1 = (nj/ni)*np.sqrt(ki/kj)
-            Term2 = (ni/nj)*np.sqrt(kj/ki)
-            XPP.append(0.5*(Term1 + Term2))
-            XPM.append(0.5*(Term1 - Term2))
-        return(XPP, XPM)
-
     
     def XP(re_kz, im_kz, nr, kappa):
         XPP=[]
@@ -211,76 +159,58 @@ def task8(theta_i, user_wl, polarisation,materials,d):
         for i in range(len(XP)):
             Ti = np.array([[XP[i], XM[i]],
                        [XM[i],XP[i]]])
-            Tlist.append(Ti)
-    #T_arrays = np.reshape(Tlist, (len(XP),2,2))
+            Tlist.append(Ti)   
         return(Tlist) #this is the 3d array - a list of 2x2 matrices
 
-
+#======= build T matrices
     if polarization == True:
-        list_XS_real = XS_real(wavenumber_list[0])
         list_XS_complex=XS(wavenumber_list[0], wavenumber_list[1])
-        list_T_real = All_T_Matrices(list_XS_real[0], list_XS_real[1])
         list_T_complex = All_T_Matrices(list_XS_complex[0], list_XS_complex[1])
     else:
-        list_XP_real = XP_real(wavenumber_list[0], refractive_index_n)
         list_XP_complex = XP(wavenumber_list[0],wavenumber_list[1], refractive_index_n, refractive_index_k)
-        list_T_real = All_T_Matrices(list_XP_real[0], list_XP_real[1])
         list_T_complex = All_T_Matrices(list_XP_complex[0], list_XP_complex[1])
 
-
+#======= functions to build M matrix
     def Make_M(re_kz, im_kz, d, polarization): 
         Plist=p_list
-        Tlist=list_T_complex #can change to real
+        Tlist=list_T_complex 
     #initializes M, therefore there are an equal amount of T and P matrices to be added to M 
         M = Tlist[0] 
         for i in range (len(Tlist)-1): #iterates through the process N-1 times
             M = np.matmul(Plist[i], M) #add the P of the ith layer 
             M = np.matmul(Tlist[i+1], M) #adds the T of the ith + 1 layer 
         return (M) #this is the fully calculated M matrix
-
+    
+#======= build M matrix
     matrix_M = Make_M(wavenumber_list[0], wavenumber_list[1], d, polarization)
-
+#======= function to return r and t
     def rt_solver(M):
         r = - M[1,0] / M[1, 1]
         t =   M[0, 0] + (M[0, 1] * r )
         return(r, t)
-    
+#======= return r and t    
     answer_r_t=rt_solver(matrix_M)
     return(answer_r_t)
-	
-def interpolate_n(wl, wl_data, n_data):
-    wl_integer = np.arange(np.rint(np.min(wl_data)),np.rint(np.max(wl_data)),1) #every integer wavelength from 330-2500
-    n_integer = np.interp(wl_integer, wl_data, n_data) #refractive index for each integer wavelength
-    loc=np.where(wl==wl_integer)
-    return n_integer[loc]
-
+    
+# =============================================================================
+# now to run the transfer matrix for different wavelength and different layer thcikness to find minimised reflectivity    
+# =============================================================================
 wl_test=np.arange(330, 900, 1)
-wl_test_n = []
-wl_test_r = []
 wl_test_R = []
-d_test = np.arange(0.0001,0.01,0.0001)
-d_test_r = []
+d_test = np.arange(10, 100, 1)
 d_test_R = []
 for i in wl_test:
-	rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,100E-9,0])
-	wl_test_r.append(rtemp_wl)
-	wl_test_R.append(abs(rtemp_wl)**2)
-	ntemp = interpolate_n(i, wl_MgF2, n_MgF2)
-	wl_test_n.append(ntemp)
+    rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,100,0])
+    wl_test_R.append(abs(rtemp_wl)**2)
 for i in d_test:
-	rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
-	#print(rtemp_d)
-	d_test_r.append(rtemp_d)
-	d_test_R.append(abs(rtemp_d)**2)
-#plt.figure()
-#plt.plot(wl_test_n, wl_test_r)
-#plt.title("refractive index against r")
+    rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
+    d_test_R.append(abs(rtemp_d)**2)
+# =============================================================================
+# plot reflectivity against wavelength and thickness
+# =============================================================================
 plt.figure()
 plt.plot(wl_test, wl_test_R)
 plt.title("wavelength against R")
-#plt.figure()
-#plt.plot(d_test, d_test_R)
-#plt.title("depth of layer index against R")
-#plt.figure()
-#plt.plot(d_test, d_test_r)
-#plt.title("depth of layer index against r")
+plt.figure()
+plt.plot(d_test, d_test_R)
+plt.title("depth of layer index against R")
