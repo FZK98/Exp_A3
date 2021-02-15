@@ -115,7 +115,7 @@ def task8(theta_i, user_wl, polarisation,materials,d):
 #        P = np.array([[P_00_element, 0], 
 #                  [0, P_11_element]])
 #        return (P)
-    p_elements_list = P_elements(refractive_index_n, refractive_index_k, d)
+    p_elements_list = P_elements(wavenumber_list[0], wavenumber_list[1], d)
 
 #outputs all the P matrices in a 3D array 
 #def All_P_Matrices(P_00_elements, P_11_elements): #there are N-1 elements 
