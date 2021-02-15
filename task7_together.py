@@ -205,12 +205,27 @@ for i in wl_test:
 for i in d_test:
     rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
     d_test_R.append(abs(rtemp_d)**2)
+
+# =============================================================================
+# find the wavelength and depth of layer that provide minimum
+# =============================================================================
+def wl_minimise(wl_test, wl_test_R):
+	minR=np.min(wl_test_R)
+	loc=np.where(wl_test_R==minR)
+	return(wl_test[loc])
+def d_minimise(d_test, d_test_R):
+	minR=np.min(d_test_R)
+	loc=np.where(d_test_R==minR)
+	return(d_test[loc])
+	
 # =============================================================================
 # plot reflectivity against wavelength and thickness
 # =============================================================================
 plt.figure()
-plt.plot(wl_test, wl_test_R)
+plt.plot(wl_test, wl_test_R, label="optimal wavelength = "+str(wl_minimise(wl_test,wl_test_R)))
 plt.title("wavelength against R")
+plt.legend()
 plt.figure()
-plt.plot(d_test, d_test_R)
+plt.plot(d_test, d_test_R, label="optimal depth = "+str(d_minimise(d_test,d_test_R)))
+plt.legend()
 plt.title("depth of layer index against R")
