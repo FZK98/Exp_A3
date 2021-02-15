@@ -12,13 +12,14 @@ Created on Thu Feb 11 11:28:53 2021
 @author: maria
 """
 import numpy as np
+import matplotlib.pyplot as plt
 #load necessary data
 #BK7_guess = np.loadtxt("BK7_guess.txt")
 wl_BK7, n_BK7, k_BK7=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_MgF2, n_MgF2, k_MgF2=np.loadtxt('MgF2.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unpack=True) #gold wavelength in nm
 #can maunally set the parameters (no real users)
-def task8(theta_i, user_wl, polarisation,materials = ["vacuum","MgF2","BK7"],d = [0,10,0]):
+def task8(theta_i, user_wl, polarisation,materials,d):
     #theta_i = 0#np.pi/2  # in radians - this is what numpy handles 
     #user_wl = 700 #nm
     polarization = "s" #or "p"
@@ -27,8 +28,8 @@ def task8(theta_i, user_wl, polarisation,materials = ["vacuum","MgF2","BK7"],d =
     else:
         polarization = False 
 #N = 1 #this is the number of layers, not including the substrate
-    materials = ["vacuum","MgF2","BK7"] #which materials constitute the layers
-    d = [0,10,0] #list of the thickness of each layer (decide units). zero for vacuum and substrate for length consistency
+    #materials = ["vacuum","MgF2","BK7"] #which materials constitute the layers
+    #d = [0,10,0] #list of the thickness of each layer (decide units). zero for vacuum and substrate for length consistency
     
 #interpolation functions for a given wavelength - returns complex n for non-transparent medium
     def interpolate_n(wl, wl_data, n_data):
@@ -53,7 +54,7 @@ def task8(theta_i, user_wl, polarisation,materials = ["vacuum","MgF2","BK7"],d =
     refractive_index_n = []
     refractive_index_k = []
     for i in range(len(materials)): #vacuum needs to be included for these
-        if materials[i] == "vacuum":
+        if materials[i] == "air":
             refractive_index_n.append(1)
             refractive_index_k.append(0)
         elif materials[i] == "BK7":
@@ -110,10 +111,10 @@ def task8(theta_i, user_wl, polarisation,materials = ["vacuum","MgF2","BK7"],d =
         return(P_00_elements, P_11_elements)
     
 #make the matrix, calling on each calculated element, will need to call on this N-1 times
-    def Make_P_Matrix(P_00_element, P_11_element):
-        P = np.array([[P_00_element, 0], 
-                  [0, P_11_element]])
-        return (P)
+#    def Make_P_Matrix(P_00_element, P_11_element):
+#        P = np.array([[P_00_element, 0], 
+#                  [0, P_11_element]])
+#        return (P)
     p_elements_list = P_elements(refractive_index_n, refractive_index_k, d)
 
 #outputs all the P matrices in a 3D array 
@@ -246,3 +247,40 @@ def task8(theta_i, user_wl, polarisation,materials = ["vacuum","MgF2","BK7"],d =
     
     answer_r_t=rt_solver(matrix_M)
     return(answer_r_t)
+	
+def interpolate_n(wl, wl_data, n_data):
+    wl_integer = np.arange(np.rint(np.min(wl_data)),np.rint(np.max(wl_data)),1) #every integer wavelength from 330-2500
+    n_integer = np.interp(wl_integer, wl_data, n_data) #refractive index for each integer wavelength
+    loc=np.where(wl==wl_integer)
+    return n_integer[loc]
+
+wl_test=np.arange(330, 900, 1)
+wl_test_n = []
+wl_test_r = []
+wl_test_R = []
+d_test = np.arange(0.0001,0.01,0.0001)
+d_test_r = []
+d_test_R = []
+for i in wl_test:
+	rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,100E-9,0])
+	wl_test_r.append(rtemp_wl)
+	wl_test_R.append(abs(rtemp_wl)**2)
+	ntemp = interpolate_n(i, wl_MgF2, n_MgF2)
+	wl_test_n.append(ntemp)
+for i in d_test:
+	rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
+	#print(rtemp_d)
+	d_test_r.append(rtemp_d)
+	d_test_R.append(abs(rtemp_d)**2)
+#plt.figure()
+#plt.plot(wl_test_n, wl_test_r)
+#plt.title("refractive index against r")
+plt.figure()
+plt.plot(wl_test, wl_test_R)
+plt.title("wavelength against R")
+#plt.figure()
+#plt.plot(d_test, d_test_R)
+#plt.title("depth of layer index against R")
+#plt.figure()
+#plt.plot(d_test, d_test_r)
+#plt.title("depth of layer index against r")
