@@ -77,7 +77,7 @@ def task8(theta_i, user_wl, polarisation,materials,d):
     def wavenumber_zi (wl, n, kappa, angle_list):
         k0 = 2*np.pi/wl
         im_kz = [0]
-        re_kz = [k0]
+        re_kz = [k0*np.cos(theta_i)]
         for i in range(len(n)-1):
             j = i + 1 
             new_im_kz = k0 * np.cos(angle_list[j]) * kappa[j]
@@ -214,12 +214,17 @@ for i in d_test:
     d_test_R.append(abs(rtemp_d)**2)
     d_test_T.append(abs(ttemp_d)**2)
     d_test_A.append(1 - (abs(rtemp_d)**2) - (abs(ttemp_d)**2) )
+
+# =============================================================================
+# find depth of gold for 10^3 attenuation
+# =============================================================================
 for i in range(1,len(d_test_T)):
     d_test_T_increasing.append(d_test_T[-i])
 d_test_T_increasing.append(d_test_T[0])
 three_orders_attenuation=np.interp(plain_glass_T/1000, d_test_T_increasing, d_test) #this is the index for the reverse list
-three_orders_attenuation=len(d_test)-three_orders_attenuation #corrected back value
+three_orders_attenuation=len(d_test)-three_orders_attenuation #corrected back value, only works if line 202 has spacing of 1
 print("depth of gold needed to attenuate by 3 orders of magnitude is: "+str(three_orders_attenuation)+"nm.")
+
 # =============================================================================
 # find the wavelength and depth of layer that provide minimum R and maximum T
 # =============================================================================
@@ -257,13 +262,13 @@ def d_maximize_A(d_test, d_test_A):
 plt.figure()
 plt.plot(wl_test, wl_test_R, label="optimal wavelength = "+str(wl_minimise_R(wl_test,wl_test_R)))
 plt.title("wavelength against R")
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("wavelength [nm]")
 plt.ylabel("Reflectance R")
 plt.figure()
 plt.plot(d_test, d_test_R, label="optimal depth = "+str(d_minimise_R(d_test,d_test_R)))
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Reflectance R")
@@ -275,13 +280,13 @@ plt.title("depth of layer index against R")
 plt.figure()
 plt.plot(wl_test, wl_test_T, label="optimal wavelength = "+str(wl_maximize_T(wl_test,wl_test_T)))
 plt.title("wavelength against T")
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("wavelength [nm]")
 plt.ylabel("Transmittance T")
 plt.figure()
 plt.plot(d_test, d_test_T, label="optimal depth = "+str(d_maximize_T(d_test,d_test_T)))
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Transmittance T")
@@ -293,13 +298,13 @@ plt.title("depth of layer index against T")
 plt.figure()
 plt.plot(wl_test, wl_test_A, label="optimal wavelength = "+str(wl_maximize_A(wl_test,wl_test_A)))
 plt.title("wavelength against A")
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("wavelength [nm]")
 plt.ylabel("Absorbance A")
 plt.figure()
 plt.plot(d_test, d_test_A, label="optimal depth = "+str(d_maximize_A(d_test,d_test_A)))
-plt.legend()
+#plt.legend()
 plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Absorbance A")

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Wed Feb 17 18:56:15 2021
+
+@author: maria
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon Feb 15 10:19:09 2021
 
 @author: maria
@@ -74,10 +81,10 @@ def task8(theta_i, user_wl, polarization,materials,d, n_ideal=0):
         return (angle_list) #returns a list of angle in each layer plus initial incident angle
 
 #======= z wavenumber component for each layer
-    def wavenumber_zi (wl, n, kappa, angle_list):
+    def wavenumber_zi (wl, n, kappa, angle_list, theta_i):
         k0 = 2*np.pi/wl
         im_kz = [0]
-        re_kz = [k0]
+        re_kz = [k0*np.cos(theta_i)]
         for i in range(len(n)-1):
             j = i + 1 
             new_im_kz = k0 * np.cos(angle_list[j]) * kappa[j]
@@ -88,7 +95,7 @@ def task8(theta_i, user_wl, polarization,materials,d, n_ideal=0):
         
 #======= construct lists of angles and wavenumbers
     angle_list = layer_angles(refractive_index_n) #this will be the list of angles in each layer found by the prev function 
-    wavenumber_list = wavenumber_zi(user_wl, refractive_index_n, refractive_index_k, angle_list)
+    wavenumber_list = wavenumber_zi(user_wl, refractive_index_n, refractive_index_k, angle_list, theta_i)
 # =============================================================================
 # we now have the following lists of data:
     # real refractive index: refractive_index_n
@@ -203,6 +210,14 @@ d_test_R = []
 theta_test = np.linspace(0,np.pi/2, 50)
 theta_test_R_s=[]
 theta_test_R_p=[]
+theta_test_R_s1=[]
+theta_test_R_p1=[]
+theta_test_R_s2=[]
+theta_test_R_p2=[]
+theta_test_R_s3=[]
+theta_test_R_p3=[]
+theta_test_R_s4=[]
+theta_test_R_p4=[]
 for i in n_test:
     rtemp_r, ttemp_r = task8(0, 400, "s",materials = ["air","MgF2","BK7"],d=[0,400/(4*i),0],  n_ideal=i)
     n_test_R.append(abs(rtemp_r)**2)
@@ -213,10 +228,26 @@ for i in d_test:
     rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
     d_test_R.append(abs(rtemp_d)**2)
 for i in theta_test:
-    rtemp_theta_s, ttemp_theta_s = task8(i, 400, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = task8(i, 350, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 400, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = task8(i, 350, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p.append(abs(rtemp_theta_p)**2)
+    rtemp_theta_s, ttemp_theta_s = task8(i, 450, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_s1.append(abs(rtemp_theta_s)**2)
+    rtemp_theta_p, ttemp_theta_p = task8(i, 450, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_p1.append(abs(rtemp_theta_p)**2)
+    rtemp_theta_s, ttemp_theta_s = task8(i, 600, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_s2.append(abs(rtemp_theta_s)**2)
+    rtemp_theta_p, ttemp_theta_p = task8(i, 600, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_p2.append(abs(rtemp_theta_p)**2)
+    rtemp_theta_s, ttemp_theta_s = task8(i, 700, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_s3.append(abs(rtemp_theta_s)**2)
+    rtemp_theta_p, ttemp_theta_p = task8(i, 700, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_p3.append(abs(rtemp_theta_p)**2)
+    rtemp_theta_s, ttemp_theta_s = task8(i, 800, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_s4.append(abs(rtemp_theta_s)**2)
+    rtemp_theta_p, ttemp_theta_p = task8(i, 800, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    theta_test_R_p4.append(abs(rtemp_theta_p)**2)
 
 # =============================================================================
 # find the wavelength and depth of layer that provide minimum
@@ -233,15 +264,16 @@ def n_minimise(n_test, n_test_R):
     minR=np.min(n_test_R)
     loc=np.where(n_test_R==minR)
     return(n_test[loc])
-def theta_minimise(theta_test, theta_test_R_s):
-    minR=np.min(theta_test_R_s)
-    loc=np.where(theta_test_R_s==minR)
+def theta_minimise(theta_test, test_R):
+    minR=np.min(test_R)
+    loc=np.where(test_R==minR)
     return(theta_test[loc])
     
     
 # =============================================================================
 # plot reflectivity against parameter
 # =============================================================================
+#wavelength
 plt.figure()
 plt.plot(wl_test, wl_test_R, label="optimal wavelength = "+str(wl_minimise(wl_test,wl_test_R)))
 plt.title("wavelength against R")
@@ -250,6 +282,7 @@ plt.legend()
 plt.grid()
 plt.xlabel("wavelength [nm]")
 plt.ylabel("Reflectance R")
+#depth of layer
 plt.figure()
 plt.plot(d_test, d_test_R, label="optimal depth = "+str(d_minimise(d_test,d_test_R)))
 plt.hlines(plain_glass_R,np.min(d_test), np.max(d_test), label="glass with no layer")
@@ -258,15 +291,32 @@ plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Reflectance R")
 plt.title("depth of layer index against R")
+#incident angle
 plt.figure()
-plt.plot(theta_test, theta_test_R_s,label="s. brewster angle = "+str(theta_minimise(theta_test,theta_test_R_s))+" rad")
-plt.plot(theta_test, theta_test_R_p, label="p")
-plt.hlines(plain_glass_R,0,np.pi/2, label="glass with no layer")
+plt.plot(theta_test, theta_test_R_p, label="350nm brewster angle = "+str(theta_minimise(theta_test,theta_test_R_p))+" rad")
+plt.plot(theta_test, theta_test_R_p1, label="450 nm brewster angle = "+str(theta_minimise(theta_test,theta_test_R_p1))+" rad")
+plt.plot(theta_test, theta_test_R_p2, label="600nm brewster angle = "+str(theta_minimise(theta_test,theta_test_R_p2))+" rad")
+plt.plot(theta_test, theta_test_R_p3, label="700 nm brewster angle = "+str(theta_minimise(theta_test,theta_test_R_p3))+" rad")
+plt.plot(theta_test, theta_test_R_p4, label="800 nm brewster angle = "+str(theta_minimise(theta_test,theta_test_R_p4))+" rad")
+plt.xticks(ticks=np.arange(0, 5*np.pi/8, np.pi/8), labels=["0", "$\pi$/8", "$\pi$/4", "3$\pi$/8", "$\pi$/2"])
 plt.legend()
 plt.grid()
 plt.xlabel("angle of incidence [rad]")
 plt.ylabel("Reflectance R")
-plt.title("angle of incidence against R")
+plt.title("angle of incidence against R, p polarisation")
+plt.figure()
+plt.plot(theta_test, theta_test_R_s,label="350 nm")
+plt.plot(theta_test, theta_test_R_s1,label="450 nm")
+plt.plot(theta_test, theta_test_R_s2,label="600 nm")
+plt.plot(theta_test, theta_test_R_s3,label="700 nm")
+plt.plot(theta_test, theta_test_R_s4,label="800 nm")
+plt.xticks(ticks=np.arange(0, 5*np.pi/8, np.pi/8), labels=["0", "$\pi$/8", "$\pi$/4", "3$\pi$/8", "$\pi$/2"])
+plt.legend()
+plt.grid()
+plt.xlabel("angle of incidence [rad]")
+plt.ylabel("Reflectance R")
+plt.title("angle of incidence against R, s polarization")
+#refractive index
 plt.figure()
 plt.plot(n_test, n_test_R,label="optimal n = "+str(n_minimise(n_test,n_test_R)))
 plt.hlines(plain_glass_R,0,2.5, label="glass with no layer")
