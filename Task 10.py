@@ -191,13 +191,18 @@ def task8(theta_i, user_wl, polarisation,materials,d):
 # =============================================================================
 # now to run the transfer matrix for different wavelength and different layer thcikness to find minimised reflectivity    
 # =============================================================================
+plain_glass = task8(0, 400, "s",materials = ["air","gold","BK7"],d=[0,0,0])
+plain_glass_R=abs(plain_glass[0])**2
+plain_glass_T=abs(plain_glass[1])**2
+
 wl_test=np.arange(330, 2470, 1)
 wl_test_R = []
 wl_test_T = []
 wl_test_A = []
-d_test = np.arange(10, 100, 0.1)
+d_test = np.arange(0, 200, 1)
 d_test_R = []
 d_test_T = []
+d_test_T_increasing=[] #interpolation function needs x values to be increasing
 d_test_A = []
 for i in wl_test:
     rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","gold","BK7"],d=[0,50,0])
@@ -209,7 +214,12 @@ for i in d_test:
     d_test_R.append(abs(rtemp_d)**2)
     d_test_T.append(abs(ttemp_d)**2)
     d_test_A.append(1 - (abs(rtemp_d)**2) - (abs(ttemp_d)**2) )
-
+for i in range(1,len(d_test_T)):
+    d_test_T_increasing.append(d_test_T[-i])
+d_test_T_increasing.append(d_test_T[0])
+three_orders_attenuation=np.interp(plain_glass_T/1000, d_test_T_increasing, d_test) #this is the index for the reverse list
+three_orders_attenuation=len(d_test)-three_orders_attenuation #corrected back value
+print("depth of gold needed to attenuate by 3 orders of magnitude is: "+str(three_orders_attenuation)+"nm.")
 # =============================================================================
 # find the wavelength and depth of layer that provide minimum R and maximum T
 # =============================================================================
