@@ -17,7 +17,8 @@ wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unp
 #wl_Ta2O5, n_Ta2O5, k_Ta2O5 = np.loadtxt(open("Ta2O5.csv"), delimiter=",", skiprows=1, unpack=True)
 #wl_Ta2O5*=1000
 wl_Ta2O5, n_Ta2O5, k_Ta2O5 = np.loadtxt(open("Ta2O5_2.csv"), delimiter=",", skiprows=1, unpack=True)
-wl_Ta2O5*=1000
+wl_Ta2O5*=1000 #make the wavelengths in nm
+
 def interpolate_n(wl, wl_data, n_data):
     wl_integer = np.arange(np.rint(np.min(wl_data)),np.rint(np.max(wl_data)),1) #every integer wavelength from 330-2500
     n_integer = np.interp(wl_integer, wl_data, n_data) #refractive index for each integer wavelength
@@ -201,7 +202,7 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
     return(answer_r_t)
 
 # =============================================================================
-# wavelength against R for varying N
+# wavelength against R for varying N to see the effect - stop band filter
 # =============================================================================
 #wl_test=np.arange(350,900,1)
 #wl_test_R_2=[]
@@ -232,8 +233,8 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
 #plt.ylabel("Reflectance R")
     
 # =============================================================================
-# N against R for set wavelength
-## =============================================================================
+# N against R for set wavelength (task 12)
+# =============================================================================
 number_test=np.arange(0,15,1)
 number_test_R=[]
 for i in number_test:
@@ -257,7 +258,6 @@ plt.plot(number_test, number_test_R)
 plt.grid()
 plt.xlabel("number of periods N")
 plt.ylabel("R")
-
 
 ninetynine=np.round(np.interp(0.9999, number_test_R, number_test))
 print("need "+str(ninetynine)+" layers to get 99.99% reflectance")
