@@ -282,8 +282,6 @@ def stack(theta, wl, polarisation, N):
     number_test_R = (abs(number_test_R_temp)**2)
     return(number_test_R)
 
-
-
     
 incident_angles = np.linspace(0 , np.pi/4 , 90)
 angle_test_R_S = []
@@ -309,8 +307,76 @@ plt.xlabel("Angle of incidence")
 plt.ylabel("R")
 plt.title("Angle of incidence against Reflectance (p polarised)")
 
+# =============================================================================
+# R against wavelength for different angles
+# =============================================================================
+wl_bragg =663
+def stack_fixed_d(theta, wl, polarisation, N):
+    mg_d = wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
+    ta2o5_d= wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    materials_chosen=["Ta2O5","MgF2"]*N
+    depths_chosen=[ta2o5_d,mg_d]*N
+    materials_N=["air"]
+    depths_N=[0]
+    for j in range(2*N):
+        materials_N.append(materials_chosen[j])
+        depths_N.append(depths_chosen[j])
+    materials_N.append("BK7")    
+    depths_N.append(0)
+    number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
+    number_test_R = (abs(number_test_R_temp)**2)
+    return(number_test_R)
 
+wl_test = np.arange(400,900,1)
+wl_test_R1s =[]
+wl_test_R2s =[]
+wl_test_R3s =[]
+wl_test_R4s =[]
+wl_test_R5s = []
 
+wl_test_R1p =[]
+wl_test_R2p =[]
+wl_test_R3p =[]
+wl_test_R4p =[]
+wl_test_R5p =[]
 
+number_periods=8
 
+for i in wl_test:
+	wl_test_R1s.append(stack_fixed_d(0,i,"s",number_periods))
+	wl_test_R2s.append(stack_fixed_d(np.pi/16,i,"s",number_periods))
+	wl_test_R3s.append(stack_fixed_d(np.pi/8,i,"s",number_periods))
+	wl_test_R4s.append(stack_fixed_d(3*np.pi/16,i,"s",number_periods))
+	wl_test_R5s.append(stack_fixed_d(np.pi/4,i,"s",number_periods))
+	
+	
+	wl_test_R1p.append(stack_fixed_d(0,i,"p",number_periods))
+	wl_test_R2p.append(stack_fixed_d(np.pi/16,i,"p",number_periods))
+	wl_test_R3p.append(stack_fixed_d(np.pi/8,i,"p",number_periods))
+	wl_test_R4p.append(stack_fixed_d(3*np.pi/16,i,"p",number_periods))
+	wl_test_R5p.append(stack_fixed_d(np.pi/4, i, "p", number_periods))
+	
+plt.figure()
+plt.plot(wl_test, wl_test_R1s, label="0")
+#plt.plot(wl_test, wl_test_R2s, label="$\pi$/16")
+plt.plot(wl_test, wl_test_R3s, label="$\pi$/8")
+#plt.plot(wl_test, wl_test_R4s, label="3$\pi$/8")
+plt.plot(wl_test, wl_test_R5s, label="$\pi$/4")
+plt.legend()
+plt.grid()
+plt.title("s polarization")
+plt.xlabel("wavelength(nm)")
+plt.ylabel("Reflectance R")
+
+plt.figure()
+plt.plot(wl_test, wl_test_R1p, label="0")
+#plt.plot(wl_test, wl_test_R2p, label="$\pi$/16")
+plt.plot(wl_test, wl_test_R3p, label="$\pi$/8")
+#plt.plot(wl_test, wl_test_R4p, label="3$\pi$/8")
+plt.plot(wl_test, wl_test_R5p, label="$\pi$/4")
+plt.legend()
+plt.grid()
+plt.title("p polarization")
+plt.xlabel("wavelength(nm)")
+plt.ylabel("Reflectance R")
 
