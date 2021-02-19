@@ -204,29 +204,45 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
 # =============================================================================
 # wavelength against R for varying N
 # =============================================================================
-wl_test=np.arange(350,900,1)
+def stack(theta, wl, N):
+    mg_d = wl/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
+    ta2o5_d= wl/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    materials_chosen=["Ta2O5","MgF2"]*N
+    depths_chosen=[ta2o5_d,mg_d]*N
+    materials_N=["air"]
+    depths_N=[0]
+    for j in range(2*N):
+        materials_N.append(materials_chosen[j])
+        depths_N.append(depths_chosen[j])
+    materials_N.append("BK7")    
+    depths_N.append(0)
+    return(materials_N, depths_N)
+wl_bragg = 663#663 is chosen bragg wavelenth, can be changed
+wl_test=np.arange(400,900,1)
 wl_test_R_2=[]
-wl_test_R_3=[]
-wl_test_R_4=[]
+wl_test_R_5=[]
+wl_test_R_15=[]
 wl_test_R_10=[]
 wl_test_i = []
 for i in wl_test:
-    mg_n_test = float(interpolate_n(633, wl_MgF2, n_MgF2))
-    ta05_n_test =float(interpolate_n(633, wl_Ta2O5, n_Ta2O5))
-    a2 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),0])
-    wl_test_R_2.append(abs(a2[0])**2)
-    a3 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),0])
-    wl_test_R_3.append(abs(a3[0])**2)
-    a4 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),0])
-    wl_test_R_4.append(abs(a4[0])**2)
-    a10 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),i/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),633/(4*ta05_n_test),633/(4*mg_n_test),0])
-    wl_test_R_10.append(abs(a10[0])**2)
     wl_test_i.append(i)
+    materials2, depths2=stack(0,wl_bragg,2) 
+    rtest2, ttest2=transfer_matrix(0, i, "s", materials2, depths2)
+    wl_test_R_2.append(abs(rtest2)**2)
+    materials5, depths5=stack(0,wl_bragg,5) 
+    rtest5, ttest5=transfer_matrix(0, i, "s", materials5, depths5)
+    wl_test_R_5.append(abs(rtest5)**2)
+    materials10, depths10=stack(0,wl_bragg,10) 
+    rtest10, ttest10=transfer_matrix(0, i, "s", materials10, depths10)
+    wl_test_R_10.append(abs(rtest10)**2)
+    materials15, depths15=stack(0,wl_bragg,15) 
+    rtest15, ttest15=transfer_matrix(0, i, "s", materials15, depths15)
+    wl_test_R_15.append(abs(rtest15)**2)
 plt.figure()
-plt.plot(wl_test_i, wl_test_R_2, label="2 layers")   
-plt.plot(wl_test_i, wl_test_R_3, label="3 layers")   
-plt.plot(wl_test_i, wl_test_R_4, label="4 layers")   
-plt.plot(wl_test_i, wl_test_R_10, label="10 layers")   
+plt.plot(wl_test_i, wl_test_R_2, label="2 periods")   
+plt.plot(wl_test_i, wl_test_R_5, label="5 periods")   
+plt.plot(wl_test_i, wl_test_R_10, label="10 periods")   
+plt.plot(wl_test_i, wl_test_R_15, label="15 periods")   
 plt.legend()
 plt.grid()    
 plt.xlabel("wavelength (nm)")
