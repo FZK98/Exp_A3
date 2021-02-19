@@ -266,7 +266,7 @@ print("need "+str(ninetynine)+" layers to get 99.99% reflectance")
 ## =============================================================================
 
 #make a dielectric stack with N periods at a given wavelength and angle 
-def stack(theta, wl, N):
+def stack(theta, wl, polarisation, N):
     mg_d = wl/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
     ta2o5_d= wl/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
     materials_chosen=["Ta2O5","MgF2"]*N
@@ -278,28 +278,36 @@ def stack(theta, wl, N):
         depths_N.append(depths_chosen[j])
     materials_N.append("BK7")    
     depths_N.append(0)
-    number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl,"s",materials_N,depths_N)
+    number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
     number_test_R = (abs(number_test_R_temp)**2)
     return(number_test_R)
 
 
 
     
-incident_angles = np.linspace(0 , np.pi/2 , 90)
-angle_test_R = []
+incident_angles = np.linspace(0 , np.pi/4 , 90)
+angle_test_R_S = []
+angle_test_R_P = []
 for i in incident_angles :
-    angle_test_R.append(stack(i, 633, 5))
+    angle_test_R_S.append(stack(i, 633,"s", 12))
+    angle_test_R_P.append(stack(i, 633,"p", 12))
+    
     
 
 
 plt.figure()
-plt.plot(incident_angles, angle_test_R)    
+plt.plot(incident_angles, angle_test_R_S)    
 plt.grid()
 plt.xlabel("Angle of incidence")
 plt.ylabel("R")
-plt.title("Angle of incidence against Reflectance")
+plt.title("Angle of incidence against Reflectance (s polarised)")
 
-
+plt.figure()
+plt.plot(incident_angles, angle_test_R_P)    
+plt.grid()
+plt.xlabel("Angle of incidence")
+plt.ylabel("R")
+plt.title("Angle of incidence against Reflectance (p polarised)")
 
 
 
