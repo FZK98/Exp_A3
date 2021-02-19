@@ -191,7 +191,7 @@ def task8(theta_i, user_wl, polarisation,materials,d):
 # =============================================================================
 # now to run the transfer matrix for different wavelength and different layer thcikness to find minimised reflectivity    
 # =============================================================================
-plain_glass = task8(0, 400, "s",materials = ["air","gold","BK7"],d=[0,0,0])
+plain_glass = task8(0, 600, "s",materials = ["air","gold","BK7"],d=[0,0,0])
 plain_glass_R=abs(plain_glass[0])**2
 plain_glass_T=abs(plain_glass[1])**2
 
@@ -199,21 +199,37 @@ wl_test=np.arange(330, 2470, 1)
 wl_test_R = []
 wl_test_T = []
 wl_test_A = []
-d_test = np.arange(0, 200, 1)
+d_test = np.arange(0, 100, 1)
 d_test_R = []
 d_test_T = []
 d_test_T_increasing=[] #interpolation function needs x values to be increasing
-d_test_A = []
+d_test_A1 = []
+d_test_A2 = []
+d_test_A3 = []
+d_test_A4 = []
+d_test_A5 = []
+d_test_A6 = []
 for i in wl_test:
     rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","gold","BK7"],d=[0,50,0])
     wl_test_R.append(abs(rtemp_wl)**2)
     wl_test_T.append(abs(ttemp_wl)**2)
     wl_test_A.append(1 - (abs(rtemp_wl)**2) - (abs(ttemp_wl)**2) )
 for i in d_test:
-    rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    d_test_R.append(abs(rtemp_d)**2)
-    d_test_T.append(abs(ttemp_d)**2)
-    d_test_A.append(1 - (abs(rtemp_d)**2) - (abs(ttemp_d)**2) )
+	#set the wavelengths to whatever u want!
+    rtemp_d1, ttemp_d1 = task8(0, 400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d2, ttemp_d2 = task8(0, 500, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d3, ttemp_d3 = task8(0, 800, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d4, ttemp_d4 = task8(0, 1000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d5, ttemp_d5 = task8(0, 2000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d6, ttemp_d6 = task8(0, 2400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    d_test_R.append(abs(rtemp_d1)**2)
+    d_test_T.append(abs(ttemp_d1)**2)
+    d_test_A1.append(1 - (abs(rtemp_d1)**2) - (abs(ttemp_d1)**2) )
+    d_test_A2.append(1 - (abs(rtemp_d2)**2) - (abs(ttemp_d2)**2) )
+    d_test_A3.append(1 - (abs(rtemp_d3)**2) - (abs(ttemp_d3)**2) )
+    d_test_A4.append(1 - (abs(rtemp_d4)**2) - (abs(ttemp_d4)**2) )
+    d_test_A5.append(1 - (abs(rtemp_d5)**2) - (abs(ttemp_d5)**2) )
+    d_test_A6.append(1 - (abs(rtemp_d6)**2) - (abs(ttemp_d6)**2) )
 
 # =============================================================================
 # find depth of gold for 10^3 attenuation
@@ -273,10 +289,10 @@ plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Reflectance R")
 plt.title("depth of layer index against R")
-
-# =============================================================================
-# plot tranmission against wavelength and thickness
-# =============================================================================
+#
+## =============================================================================
+## plot tranmission against wavelength and thickness
+## =============================================================================
 plt.figure()
 plt.plot(wl_test, wl_test_T, label="optimal wavelength = "+str(wl_maximize_T(wl_test,wl_test_T)))
 plt.title("wavelength against T")
@@ -303,8 +319,13 @@ plt.grid()
 plt.xlabel("wavelength [nm]")
 plt.ylabel("Absorbance A")
 plt.figure()
-plt.plot(d_test, d_test_A, label="optimal depth = "+str(d_maximize_A(d_test,d_test_A)))
-#plt.legend()
+plt.plot(d_test, d_test_A1, label="400nm optimal depth = "+str(d_maximize_A(d_test,d_test_A1)))
+plt.plot(d_test, d_test_A2, label="500nm optimal depth = "+str(d_maximize_A(d_test,d_test_A2)))
+plt.plot(d_test, d_test_A3, label="600nm optimal depth = "+str(d_maximize_A(d_test,d_test_A3)))
+plt.plot(d_test, d_test_A4, label="700nm optimal depth = "+str(d_maximize_A(d_test,d_test_A4)))
+plt.plot(d_test, d_test_A5, label="800nm optimal depth = "+str(d_maximize_A(d_test,d_test_A5)))
+#plt.plot(d_test, d_test_A6, label="2400nm optimal depth = "+str(d_maximize_A(d_test,d_test_A6)))
+plt.legend()
 plt.grid()
 plt.xlabel("layer depth [nm]")
 plt.ylabel("Absorbance A")
