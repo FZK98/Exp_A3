@@ -202,33 +202,33 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
 # =============================================================================
 # wavelength against R for varying N
 # =============================================================================
-# wl_test=np.arange(350,900,1)
-# wl_test_R_2=[]
-# wl_test_R_3=[]
-# wl_test_R_4=[]
-# wl_test_R_10=[]
-# wl_test_i = []
-# for i in wl_test:
-#     mg_n_test = float(interpolate_n(i, wl_MgF2, n_MgF2))
-#     ta05_n_test =float(interpolate_n(i, wl_Ta2O5, n_Ta2O5))
-#     a2 = transfer_matrix(0, i, "s", ["air",i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),"BK7"],[0,330,1150,330,1150,0])
-#     wl_test_R_2.append(abs(a2[0])**2)
-#     a3 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-#     wl_test_R_3.append(abs(a3[0])**2)
-#     a4 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-#     wl_test_R_4.append(abs(a4[0])**2)
-#     a10 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-#     wl_test_R_10.append(abs(a10[0])**2)
-#     wl_test_i.append(i)
-# plt.figure()
-# plt.plot(wl_test_i, wl_test_R_2, label="2 layers")   
-# plt.plot(wl_test_i, wl_test_R_3, label="3 layers")   
-# plt.plot(wl_test_i, wl_test_R_4, label="4 layers")   
-# plt.plot(wl_test_i, wl_test_R_10, label="10 layers")   
-# plt.legend()
-# plt.grid()    
-# plt.xlabel("wavelength (nm)")
-# plt.ylabel("Reflectance R")
+wl_test=np.arange(350,900,1)
+wl_test_R_2=[]
+wl_test_R_3=[]
+wl_test_R_4=[]
+wl_test_R_10=[]
+wl_test_i = []
+for i in wl_test:
+    mg_n_test = float(interpolate_n(i, wl_MgF2, n_MgF2))
+    ta05_n_test =float(interpolate_n(i, wl_Ta2O5, n_Ta2O5))
+    a2 = transfer_matrix(0, i, "s", ["air",i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),"BK7"],[0,330,1150,330,1150,0])
+    wl_test_R_2.append(abs(a2[0])**2)
+    a3 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
+    wl_test_R_3.append(abs(a3[0])**2)
+    a4 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
+    wl_test_R_4.append(abs(a4[0])**2)
+    a10 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
+    wl_test_R_10.append(abs(a10[0])**2)
+    wl_test_i.append(i)
+plt.figure()
+plt.plot(wl_test_i, wl_test_R_2, label="2 layers")   
+plt.plot(wl_test_i, wl_test_R_3, label="3 layers")   
+plt.plot(wl_test_i, wl_test_R_4, label="4 layers")   
+plt.plot(wl_test_i, wl_test_R_10, label="10 layers")   
+plt.legend()
+plt.grid()    
+plt.xlabel("wavelength (nm)")
+plt.ylabel("Reflectance R")
     
 # =============================================================================
 # N against R for set wavelength
@@ -266,9 +266,10 @@ print("need "+str(ninetynine)+" layers to get 99.99% reflectance")
 ## =============================================================================
 
 #make a dielectric stack with N periods at a given wavelength and angle 
+wl_bragg = 633
 def stack(theta, wl, polarisation, N):
-    mg_d = wl/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
-    ta2o5_d= wl/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    mg_d = wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
+    ta2o5_d= wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
     materials_chosen=["Ta2O5","MgF2"]*N
     depths_chosen=[ta2o5_d,mg_d]*N
     materials_N=["air"]
@@ -281,9 +282,9 @@ def stack(theta, wl, polarisation, N):
     number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
     number_test_R = (abs(number_test_R_temp)**2)
     return(number_test_R)
-
+#
     
-incident_angles = np.linspace(0 , np.pi/4 , 90)
+incident_angles = np.linspace(0 , np.pi/2 , 90)
 angle_test_R_S = []
 angle_test_R_P = []
 for i in incident_angles :
@@ -310,7 +311,7 @@ plt.title("Angle of incidence against Reflectance (p polarised)")
 # =============================================================================
 # R against wavelength for different angles
 # =============================================================================
-wl_bragg =663
+wl_bragg =633
 def stack_fixed_d(theta, wl, polarisation, N):
     mg_d = wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
     ta2o5_d= wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
@@ -379,4 +380,31 @@ plt.grid()
 plt.title("p polarization")
 plt.xlabel("wavelength(nm)")
 plt.ylabel("Reflectance R")
+# =============================================================================
+# contour plot
+# =============================================================================
+wl_test=np.arange(400,900,1)
+theta_test=np.arange(0,np.pi/2,0.1)
+contours = np.zeros((len(theta_test),len(wl_test)))
+contourp = np.zeros((len(theta_test),len(wl_test)))
+for i in range(len(wl_test)):
+	for j in range(len(theta_test)):
+		contours[j,i]=stack(theta_test[j],wl_test[i],"s",6)
+		contourp[j,i]=stack(theta_test[j],wl_test[i],"p",6)
+plt.figure()
+plt.contourf(contours,levels=[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
+plt.colorbar()
+plt.xticks(ticks=[0,100,200,300,400,500],labels=["400","500","600","700","800","900"])
+plt.yticks(ticks=[0,3,6,9,12,15],labels=["0","$\pi$/10","$\pi$/5","$3\pi$/10","$2\pi$/5","$\pi$/2"])
+plt.xlabel("wavelength(nm)")
+plt.ylabel("Angle of incidence")
+plt.title("s polarization")
 
+plt.figure()
+plt.contourf(contourp,levels=[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0])
+plt.colorbar()
+plt.xticks(ticks=[0,100,200,300,400,500],labels=["400","500","600","700","800","900"])
+plt.yticks(ticks=[0,3,6,9,12,15],labels=["0","$\pi$/10","$\pi$/5","$3\pi$/10","$2\pi$/5","$\pi$/2"])
+plt.xlabel("wavelength(nm)")
+plt.ylabel("Angle of incidence")
+plt.title("p polarization")
