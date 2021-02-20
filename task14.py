@@ -211,10 +211,28 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
 # =============================================================================
 wl_bragg =633
 def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2):
-    mg_d = wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
-    ta2o5_d= wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    if layer1 == "Ta2O5":
+        layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    elif layer1 == "MgF2":
+        layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
+    elif layer1 == "air":
+        layer1_d=wl_bragg/(4)
+    elif layer1 == "BK7":
+        layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
+    else:
+        layer1_d="wrong material"
+    if layer2 == "Ta2O5":
+        layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
+    elif layer2 == "MgF2":
+        layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
+    elif layer2 == "air":
+        layer2_d=wl_bragg/(4)
+    elif layer2 == "BK7":
+        layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
+    else:
+        layer2_d="wrong material"
     materials_chosen=[layer1,layer2]*N
-    depths_chosen=[ta2o5_d,mg_d]*N
+    depths_chosen=[layer1_d,layer2_d]*N
     materials_N=["air"]
     depths_N=[0]
     for j in range(2*N):
@@ -229,19 +247,22 @@ def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2):
 wl_test = np.arange(400,900,1)
 number_periods=8
 ta2o5_mgf2=[]
+mgf2_air=[]
 ta2o5_air=[]
 bk7_mgf2=[]
 ta2o5_bk7 =[]
 for i in wl_test:
-	ta2o5_mgf2.append(stack_fixed_d(0,i,"s",number_periods, "Ta2O5","MgF2"))
-	ta2o5_air.append(stack_fixed_d(0,i,"s",number_periods, "Ta2O5","air"))
-	bk7_mgf2.append(stack_fixed_d(0,i,"s",number_periods, "BK7","MgF2"))
-	ta2o5_bk7.append(stack_fixed_d(0,i,"s",number_periods, "Ta2O5","BK7"))
+    ta2o5_mgf2.append(stack_fixed_d(0,i,"p",number_periods, "Ta2O5","MgF2"))
+    ta2o5_air.append(stack_fixed_d(0,i,"p",number_periods, "Ta2O5","air"))
+    mgf2_air.append(stack_fixed_d(0,i,"p",number_periods, "MgF2","air"))
+    bk7_mgf2.append(stack_fixed_d(0,i,"p",number_periods, "BK7","MgF2"))
+    ta2o5_bk7.append(stack_fixed_d(0,i,"p",number_periods, "Ta2O5","BK7"))
 plt.figure()
 plt.plot(wl_test, ta2o5_mgf2, label="Ta2O5, MgF2")
 plt.plot(wl_test, bk7_mgf2, label="BK7, MgF2")
 plt.plot(wl_test, ta2o5_bk7, label="Ta2O5, BK7")
 plt.plot(wl_test, ta2o5_air, label="Ta2O5, air")
+plt.plot(wl_test, mgf2_air, label="MgF2, air")
 plt.grid()
 plt.legend()
 plt.xlabel("wavelength (nm)")
