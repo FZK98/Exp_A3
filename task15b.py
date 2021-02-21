@@ -241,7 +241,23 @@ def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2, gap_d):
     number_test_R = (abs(number_test_R_temp)**2)
     return(number_test_R)
 #    return(materials_N, depths_N)
-    
+	
+# =============================================================================
+# find depth that minimises reflection
+# =============================================================================
+d_test=np.arange(0,wl_bragg,1)
+d_test_R = []
+for j in d_test:
+	d_test_R.append(stack_fixed_d(0,wl_bragg, "s", 8, "Ta2O5", "MgF2",j))
+plt.figure()
+plt.plot(d_test, d_test_R)
+plt.grid()
+plt.xlabel("depth of air layer (nm)")
+plt.ylabel("R at bragg wavelength")
+
+# =============================================================================
+# explore depth, wavelength and N
+# =============================================================================
 wl_test=np.arange(400,900,1)
 wl_test_R1=[]
 wl_test_R2=[]
@@ -284,3 +300,4 @@ plt.grid()
 plt.xlabel("wavelenth (nm)")
 plt.ylabel("R")
 plt.title("optical gap width = $\lambda$/4 with different periods")
+
