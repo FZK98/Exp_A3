@@ -23,7 +23,7 @@ def interpolate_n(wl, wl_data, n_data):
     return n_integer[loc]
 def transfer_matrix(theta_i, user_wl, polarization,materials,d):
     #theta_i = 0
-    #user_wl = 700 #nm
+    #user_wl = 700 #nm 
    # polarization = "s" #or "p"
     if polarization == "s":
         polarization = True 
@@ -75,7 +75,7 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
             refractive_index_k.append("unknown material")
         
 #======= Angles for each layer
-    def layer_angles(n):
+    def layer_angles(n): #used to be range(n) - but what is n?
         angle_list = [theta_i] #will become n+1 items long
         for i in range(len(n)-1):
             sin_tj = n[i]*np.sin(angle_list[i])/ n[i+1]
@@ -207,34 +207,32 @@ def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2, gap_d):
         layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
     elif layer1 == "MgF2":
         layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
-    elif layer1 == "air":
-        layer1_d=wl_bragg/(4)
-    elif layer1 == "BK7":
-        layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
+#    elif layer1 == "BK7":
+#        layer1_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
     else:
         layer1_d="wrong material"
     if layer2 == "Ta2O5":
         layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_Ta2O5, n_Ta2O5)))
     elif layer2 == "MgF2":
         layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_MgF2, n_MgF2)))
-    elif layer2 == "air":
-        layer2_d=wl_bragg/(4)
-    elif layer2 == "BK7":
-        layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
+#    elif layer2 == "BK7":
+#        layer2_d=wl_bragg/(4*float(interpolate_n(wl, wl_BK7, n_BK7)))
     else:
         layer2_d="wrong material"
-    materials_chosen=[layer1,layer2]*N
-    depths_chosen=[layer1_d,layer2_d]*N
+    materials_chosen1=[layer1,layer2]*N
+    depths_chosen1=[layer1_d,layer2_d]*N
+    materials_chosen2=[layer2,layer1]*N
+    depths_chosen2=[layer2_d,layer1_d]*N
     materials_N=["air"]
     depths_N=[0]
     for j in range(2*N):
-        materials_N.append(materials_chosen[j])
-        depths_N.append(depths_chosen[j])
+        materials_N.append(materials_chosen1[j])
+        depths_N.append(depths_chosen1[j])
     materials_N.append("air")    
     depths_N.append(gap_d)
     for j in range(2*N):
-        materials_N.append(materials_chosen[j])
-        depths_N.append(depths_chosen[j])
+        materials_N.append(materials_chosen2[j]) #change to materials_chosen1 for same ordering, materials_chosen2 for symmetry
+        depths_N.append(depths_chosen2[j]) #same as above
     materials_N.append("BK7")    
     depths_N.append(0)
     number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
@@ -245,7 +243,7 @@ def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2, gap_d):
 # =============================================================================
 # find depth that minimises reflection
 # =============================================================================
-d_test=np.arange(0,wl_bragg,1)
+d_test=np.arange(1,wl_bragg,1)
 d_test_R = []
 for j in d_test:
 	d_test_R.append(stack_fixed_d(0,wl_bragg, "s", 8, "Ta2O5", "MgF2",j))
@@ -275,16 +273,16 @@ for i in wl_test:
     wl_test_R4.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg/2))
     wl_test_R5.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg))
 	#try different periods surrounding the optimal layer depth
-    wl_test_R6.append(stack_fixed_d(0,i,"s",6,"Ta2O5","MgF2",wl_bragg/4))
-    wl_test_R7.append(stack_fixed_d(0,i,"s",8,"Ta2O5","MgF2",wl_bragg/4))
-    wl_test_R8.append(stack_fixed_d(0,i,"s",10,"Ta2O5","MgF2",wl_bragg/4))	
+    wl_test_R6.append(stack_fixed_d(0,i,"s",6,"Ta2O5","MgF2",wl_bragg/2))
+    wl_test_R7.append(stack_fixed_d(0,i,"s",8,"Ta2O5","MgF2",wl_bragg/2))
+    wl_test_R8.append(stack_fixed_d(0,i,"s",10,"Ta2O5","MgF2",wl_bragg/2))	
 
 plt.figure()
-plt.plot(wl_test, wl_test_R1, label="0 gap")
+#plt.plot(wl_test, wl_test_R1, label="0 gap")
 plt.plot(wl_test, wl_test_R2, label="$\lambda$/8 gap")
 plt.plot(wl_test, wl_test_R3, label="$\lambda$/4 gap")
 plt.plot(wl_test, wl_test_R4, label="$\lambda$/2 gap")
-plt.plot(wl_test, wl_test_R5, label="$\lambda$ gap")
+#plt.plot(wl_test, wl_test_R5, label="$\lambda$ gap")
 plt.legend()
 plt.grid()
 plt.xlabel("wavelenth (nm)")
