@@ -199,36 +199,6 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
     answer_r_t=rt_solver(matrix_M)
     return(answer_r_t)
 
-# =============================================================================
-# wavelength against R for varying N
-# =============================================================================
-wl_test=np.arange(350,900,1)
-wl_test_R_2=[]
-wl_test_R_3=[]
-wl_test_R_4=[]
-wl_test_R_10=[]
-wl_test_i = []
-for i in wl_test:
-    mg_n_test = float(interpolate_n(i, wl_MgF2, n_MgF2))
-    ta05_n_test =float(interpolate_n(i, wl_Ta2O5, n_Ta2O5))
-    a2 = transfer_matrix(0, i, "s", ["air",i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),"BK7"],[0,330,1150,330,1150,0])
-    wl_test_R_2.append(abs(a2[0])**2)
-    a3 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-    wl_test_R_3.append(abs(a3[0])**2)
-    a4 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-    wl_test_R_4.append(abs(a4[0])**2)
-    a10 = transfer_matrix(0, i, "s", ["air","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","Ta2O5","MgF2","BK7"],[0,i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),i/(4*ta05_n_test),i/(4*mg_n_test),0])
-    wl_test_R_10.append(abs(a10[0])**2)
-    wl_test_i.append(i)
-plt.figure()
-plt.plot(wl_test_i, wl_test_R_2, label="2 layers")   
-plt.plot(wl_test_i, wl_test_R_3, label="3 layers")   
-plt.plot(wl_test_i, wl_test_R_4, label="4 layers")   
-plt.plot(wl_test_i, wl_test_R_10, label="10 layers")   
-plt.legend()
-plt.grid()    
-plt.xlabel("wavelength (nm)")
-plt.ylabel("Reflectance R")
     
 # =============================================================================
 # N against R for set wavelength
