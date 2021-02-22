@@ -237,26 +237,27 @@ def stack_fixed_d(theta, wl, polarisation, N, layer1, layer2, gap_d):
     depths_N.append(0)
     number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
     number_test_R = (abs(number_test_R_temp)**2)
-    return(number_test_R)
-#    return(materials_N, depths_N)
-	
+    number_test_T = (abs(number_test_T_temp)**2)
+    return(number_test_R) #change to return number_test_T to see how transmission changes
+    
 # =============================================================================
 # find depth that minimises reflection
 # =============================================================================
-d_test=np.arange(1,wl_bragg,1)
+d_test=np.arange(1,wl_bragg,0.5)
 d_test_R = []
 for j in d_test:
-	d_test_R.append(stack_fixed_d(0,wl_bragg, "s", 8, "Ta2O5", "MgF2",j))
+    d_test_R.append(stack_fixed_d(0,wl_bragg, "s", 8, "Ta2O5", "MgF2",j))
 plt.figure()
 plt.plot(d_test, d_test_R)
 plt.grid()
 plt.xlabel("depth of air layer (nm)")
 plt.ylabel("R at bragg wavelength")
+plt.title("633nm light reflection at different optical gap widths")
 
 # =============================================================================
 # explore depth, wavelength and N
 # =============================================================================
-wl_test=np.arange(400,900,0.5)
+wl_test=np.arange(400,900,1)
 wl_test_R1=[]
 wl_test_R2=[]
 wl_test_R3=[]
@@ -266,16 +267,16 @@ wl_test_R6=[]
 wl_test_R7=[]
 wl_test_R8=[]
 for i in wl_test:
-	#try different widths of the layer
+    #try different widths of the layer
     wl_test_R1.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",0))
     wl_test_R2.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg/8))
     wl_test_R3.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg/4))
     wl_test_R4.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg/2))
     wl_test_R5.append(stack_fixed_d(0,i,"s",4,"Ta2O5","MgF2",wl_bragg))
-	#try different periods surrounding the optimal layer depth
+    #try different periods surrounding the optimal layer depth
     wl_test_R6.append(stack_fixed_d(0,i,"s",6,"Ta2O5","MgF2",wl_bragg/2))
     wl_test_R7.append(stack_fixed_d(0,i,"s",8,"Ta2O5","MgF2",wl_bragg/2))
-    wl_test_R8.append(stack_fixed_d(0,i,"s",10,"Ta2O5","MgF2",wl_bragg/2))	
+    wl_test_R8.append(stack_fixed_d(0,i,"s",2,"Ta2O5","MgF2",wl_bragg/2))    
 
 plt.figure()
 #plt.plot(wl_test, wl_test_R1, label="0 gap")
@@ -292,10 +293,10 @@ plt.figure()
 plt.plot(wl_test, wl_test_R4, label="4 periods")
 plt.plot(wl_test, wl_test_R6, label="6 periods")
 plt.plot(wl_test, wl_test_R7, label="8 periods")
-plt.plot(wl_test, wl_test_R8, label="10 periods")
+plt.plot(wl_test, wl_test_R8, label="2 periods")
 plt.legend()
 plt.grid()
 plt.xlabel("wavelenth (nm)")
 plt.ylabel("R")
-plt.title("optical gap width = $\lambda$/4 with different periods")
+plt.title("optical gap width = $\lambda$/2 with different periods")
 
