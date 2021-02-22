@@ -256,7 +256,7 @@ plt.ylabel("R at bragg wavelength")
 # =============================================================================
 # explore depth, wavelength and N
 # =============================================================================
-wl_test=np.arange(400,900,1)
+wl_test=np.arange(400,900,0.5)
 wl_test_R1=[]
 wl_test_R2=[]
 wl_test_R3=[]
