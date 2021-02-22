@@ -205,7 +205,7 @@ def transfer_matrix(theta_i, user_wl, polarization, materials, d):
 # =============================================================================
 # Transfer Matrix Method applied to the gold mirror
 # =============================================================================
-plain_glass = transfer_matrix(0, 600, "s", materials = ["air","gold","BK7"], d=[0,0,0])
+plain_glass = transfer_matrix(0, 600, "s", materials = ["air","gold","BK7"], d=[0,2262,0])
 plain_glass_r=plain_glass[0]
 
 
@@ -226,7 +226,7 @@ def stack(theta, wl, polarisation, N):
 DBR_r = stack(0, 600, "s", 12)
 
 
-print("DO NOT COPY THIS CODE INTO ANOTHER FILE - it is really roughly taken from other files")
+#print("DO NOT COPY THIS CODE INTO ANOTHER FILE - it is really roughly taken from other files")
 
 print("this is the complex amplitude of the reflected ray from the gold mirror: ", plain_glass_r)
 print("this is the complex amplitude of the reflected ray from the DBR mirror: ", DBR_r)
@@ -235,6 +235,7 @@ print("the phase of the wave reflected from the DBR is: ", np.angle(DBR_r))
 print("the phase of the wave reflected from the gold mirror is: ", np.angle(plain_glass_r))
 
 phase_diff = (abs(np.angle(DBR_r) - np.angle(plain_glass_r))) % (2*np.pi)
+print("the phase difference between the reflected rays is: ", phase_diff)
 
 if phase_diff <= np.pi and phase_diff >=0 : 
     print("the reflected rays are in phase")
