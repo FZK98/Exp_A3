@@ -14,7 +14,7 @@ wl_BK7, n_BK7, k_BK7=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=
 wl_MgF2, n_MgF2, k_MgF2=np.loadtxt('MgF2.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unpack=True) #gold wavelength in nm
 
-def task8(theta_i, user_wl, polarisation,materials,d):
+def transfer_matrix(theta_i, user_wl, polarisation,materials,d):
     #theta_i = 0
     #user_wl = 700 #nm
     polarization = "s" #or "p"
@@ -191,7 +191,7 @@ def task8(theta_i, user_wl, polarisation,materials,d):
 # =============================================================================
 # now to run the transfer matrix for different wavelength and different layer thcikness to find minimised reflectivity    
 # =============================================================================
-plain_glass = task8(0, 600, "s",materials = ["air","gold","BK7"],d=[0,0,0])
+plain_glass = transfer_matrix(0, 600, "s",materials = ["air","gold","BK7"],d=[0,0,0])
 plain_glass_R=abs(plain_glass[0])**2
 plain_glass_T=abs(plain_glass[1])**2
 
@@ -210,18 +210,18 @@ d_test_A4 = []
 d_test_A5 = []
 d_test_A6 = []
 for i in wl_test:
-    rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","gold","BK7"],d=[0,50,0])
+    rtemp_wl, ttemp_wl = transfer_matrix(0, i, "s",materials = ["air","gold","BK7"],d=[0,50,0])
     wl_test_R.append(abs(rtemp_wl)**2)
     wl_test_T.append(abs(ttemp_wl)**2)
     wl_test_A.append(1 - (abs(rtemp_wl)**2) - (abs(ttemp_wl)**2) )
 for i in d_test:
-	#set the wavelengths to whatever u want!
-    rtemp_d1, ttemp_d1 = task8(0, 400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    rtemp_d2, ttemp_d2 = task8(0, 500, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    rtemp_d3, ttemp_d3 = task8(0, 800, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    rtemp_d4, ttemp_d4 = task8(0, 1000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    rtemp_d5, ttemp_d5 = task8(0, 2000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
-    rtemp_d6, ttemp_d6 = task8(0, 2400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+	#set the wavelengths to whatever needed
+    rtemp_d1, ttemp_d1 = transfer_matrix(0, 400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d2, ttemp_d2 = transfer_matrix(0, 500, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d3, ttemp_d3 = transfer_matrix(0, 800, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d4, ttemp_d4 = transfer_matrix(0, 1000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d5, ttemp_d5 = transfer_matrix(0, 2000, "s", materials = ["air","gold","BK7"],d=[0,i,0])
+    rtemp_d6, ttemp_d6 = transfer_matrix(0, 2400, "s", materials = ["air","gold","BK7"],d=[0,i,0])
     d_test_R.append(abs(rtemp_d1)**2)
     d_test_T.append(abs(ttemp_d1)**2)
     d_test_A1.append(1 - (abs(rtemp_d1)**2) - (abs(ttemp_d1)**2) )
