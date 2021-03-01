@@ -18,5 +18,5 @@ Each file in this repository is named after the task in the A3 lab script that t
   * for the MgF2-Ta2O5 DBR, it returns the list of materials and their optimised depths in task 12
   * In task 13, it returns reflectance R
  * stack_fixed_d (first used task 14)
-  * same as stack, but this time can specify different materials and depths
-  * output now reflectance R
+   * same as stack, but this time can specify different materials and depths
+   * output now reflectance R
