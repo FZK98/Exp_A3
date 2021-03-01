@@ -25,7 +25,7 @@ wl_BK7, n_BK7, k_BK7=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=
 wl_MgF2, n_MgF2, k_MgF2=np.loadtxt('MgF2.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unpack=True) #gold wavelength in nm
 
-def task8(theta_i, user_wl, polarization,materials,d, n_ideal=0):
+def transfer_matrix(theta_i, user_wl, polarization,materials,d, n_ideal=0):
     
 #interpolation functions for a given wavelength - returns complex n for non-transparent medium
     def interpolate_n(wl, wl_data, n_data):
@@ -198,7 +198,7 @@ def task8(theta_i, user_wl, polarization,materials,d, n_ideal=0):
 # =============================================================================
 # now to run the transfer matrix for different wavelength and different layer thcikness to find minimised reflectivity    
 # =============================================================================
-plain_glass = task8(0, 400, "s", ["air","BK7"],[0,0],0)
+plain_glass = transfer_matrix(0, 400, "s", ["air","BK7"],[0,0],0)
 plain_glass_R=abs(plain_glass[0])**2
 
 wl_test=np.arange(330, 900, 1)
@@ -219,34 +219,34 @@ theta_test_R_p3=[]
 theta_test_R_s4=[]
 theta_test_R_p4=[]
 for i in n_test:
-    rtemp_r, ttemp_r = task8(0, 400, "s",materials = ["air","MgF2","BK7"],d=[0,400/(4*i),0],  n_ideal=i)
+    rtemp_r, ttemp_r = transfer_matrix(0, 400, "s",materials = ["air","MgF2","BK7"],d=[0,400/(4*i),0],  n_ideal=i)
     n_test_R.append(abs(rtemp_r)**2)
 for i in wl_test:
-    rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_wl, ttemp_wl = transfer_matrix(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     wl_test_R.append(abs(rtemp_wl)**2)
 for i in d_test:
-    rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
+    rtemp_d, ttemp_d = transfer_matrix(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
     d_test_R.append(abs(rtemp_d)**2)
 for i in theta_test:
-    rtemp_theta_s, ttemp_theta_s = task8(i, 350, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = transfer_matrix(i, 350, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 350, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = transfer_matrix(i, 350, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p.append(abs(rtemp_theta_p)**2)
-    rtemp_theta_s, ttemp_theta_s = task8(i, 450, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = transfer_matrix(i, 450, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s1.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 450, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = transfer_matrix(i, 450, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p1.append(abs(rtemp_theta_p)**2)
-    rtemp_theta_s, ttemp_theta_s = task8(i, 600, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = transfer_matrix(i, 600, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s2.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 600, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = transfer_matrix(i, 600, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p2.append(abs(rtemp_theta_p)**2)
-    rtemp_theta_s, ttemp_theta_s = task8(i, 700, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = transfer_matrix(i, 700, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s3.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 700, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = transfer_matrix(i, 700, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p3.append(abs(rtemp_theta_p)**2)
-    rtemp_theta_s, ttemp_theta_s = task8(i, 800, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_s, ttemp_theta_s = transfer_matrix(i, 800, "s", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_s4.append(abs(rtemp_theta_s)**2)
-    rtemp_theta_p, ttemp_theta_p = task8(i, 800, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
+    rtemp_theta_p, ttemp_theta_p = transfer_matrix(i, 800, "p", materials = ["air","MgF2","BK7"],d=[0,400/(4*1.38),0])
     theta_test_R_p4.append(abs(rtemp_theta_p)**2)
 
 # =============================================================================
