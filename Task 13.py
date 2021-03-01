@@ -17,11 +17,7 @@ wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unp
 #wl_Ta2O5*=1000
 wl_Ta2O5, n_Ta2O5, k_Ta2O5 = np.loadtxt(open("Ta2O5_2.csv"), delimiter=",", skiprows=1, unpack=True)
 wl_Ta2O5*=1000
-def interpolate_n(wl, wl_data, n_data):
-    wl_integer = np.arange(np.rint(np.min(wl_data)),np.rint(np.max(wl_data)),1) #every integer wavelength from 330-2500
-    n_integer = np.interp(wl_integer, wl_data, n_data) #refractive index for each integer wavelength
-    loc=np.where(wl==wl_integer)
-    return n_integer[loc]
+
 def transfer_matrix(theta_i, user_wl, polarization,materials,d):
     #theta_i = 0
     #user_wl = 700 #nm
@@ -199,9 +195,16 @@ def transfer_matrix(theta_i, user_wl, polarization,materials,d):
     answer_r_t=rt_solver(matrix_M)
     return(answer_r_t)
 
-    
+ #interpolate refractive index for analysis
+	
+def interpolate_n(wl, wl_data, n_data):
+    wl_integer = np.arange(np.rint(np.min(wl_data)),np.rint(np.max(wl_data)),1) #every integer wavelength from 330-2500
+    n_integer = np.interp(wl_integer, wl_data, n_data) #refractive index for each integer wavelength
+    loc=np.where(wl==wl_integer)
+    return n_integer[loc]
+
 # =============================================================================
-# N against R for set wavelength
+# N against R for given wavelength
 ## =============================================================================
 number_test=np.arange(0,50,1)
 number_test_R=[]
@@ -252,8 +255,7 @@ def stack(theta, wl, polarisation, N):
     number_test_R_temp, number_test_T_temp = transfer_matrix(theta,wl, polarisation ,materials_N,depths_N)
     number_test_R = (abs(number_test_R_temp)**2)
     return(number_test_R)
-#
-    
+
 incident_angles = np.linspace(0 , np.pi/2 , 90)
 angle_test_R_S = []
 angle_test_R_P = []
@@ -351,7 +353,7 @@ plt.title("p polarization")
 plt.xlabel("wavelength(nm)")
 plt.ylabel("Reflectance R")
 # =============================================================================
-# contour plot
+# contour plots for wavelength and angle against R
 # =============================================================================
 wl_test=np.arange(400,900,1)
 theta_test=np.arange(0,np.pi/2,0.1)
