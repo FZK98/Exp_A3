@@ -278,3 +278,8 @@ plt.ylabel("R")
 ninetynine=np.round(np.interp(0.9999, number_test_R, number_test))
 print("need "+str(ninetynine)+" layers to get 99.99% reflectance")
 print("maximum reflectivity is "+str(max(number_test_R)))
+
+gold_reflectance_temp=transfer_matrix(0, 633, "s", ["air","gold","BK7"],[0,50,0])
+gold_reflectance = abs(gold_reflectance_temp[0])**2
+gold_reflectance_surpass = np.round(np.interp(gold_reflectance, number_test_R, number_test))
+print("need "+str(gold_reflectance_surpass)+" layers to beat gold's reflectance")
