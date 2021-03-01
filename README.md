@@ -1,5 +1,6 @@
 # A3 Lab
 This project models different kinds of thin-film optical filters using a transfer matrix model. The versatility of the model allows multiple kinds of optical filters to be modelled including anti-reflection coatings, neutral density filters, highly reflective DBR stacks and single wavelength transmission VCSELs.
+The data used for refractive index is in the repository also, with the files named after the materials.
 ## Files and their functions
 Each file in this repository is named after the task in the A3 lab script that they are deisgned to provide answers for.
 * transfer_matrix function (first used in file task7_together) takes as input:
