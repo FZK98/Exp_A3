@@ -18,7 +18,7 @@ wl_BK7, n_BK7, k_BK7=np.loadtxt('BK7.txt', delimiter = '\t', skiprows=1, unpack=
 wl_MgF2, n_MgF2, k_MgF2=np.loadtxt('MgF2.txt', delimiter = '\t', skiprows=1, unpack=True ) #BK7 wavelength in nm
 wl_gold, n_gold, k_gold = np.loadtxt('Au.txt', delimiter = '\t', skiprows=1, unpack=True) #gold wavelength in nm
 
-def task8(theta_i, user_wl, polarisation,materials,d):
+def transfer_matrix(theta_i, user_wl, polarisation,materials,d):
     #theta_i = 0
     #user_wl = 700 #nm
     polarization = "s" #or "p"
@@ -200,10 +200,10 @@ wl_test_R = []
 d_test = np.arange(10, 100, 1)
 d_test_R = []
 for i in wl_test:
-    rtemp_wl, ttemp_wl = task8(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,100,0])
+    rtemp_wl, ttemp_wl = transfer_matrix(0, i, "s",materials = ["air","MgF2","BK7"],d=[0,100,0])
     wl_test_R.append(abs(rtemp_wl)**2)
 for i in d_test:
-    rtemp_d, ttemp_d = task8(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
+    rtemp_d, ttemp_d = transfer_matrix(0, 400, "s", materials = ["air","MgF2","BK7"],d=[0,i,0])
     d_test_R.append(abs(rtemp_d)**2)
 
 # =============================================================================
